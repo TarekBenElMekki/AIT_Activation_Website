@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>A2030 – Hero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+/* =========================
+   THEME VARIABLES
+========================= */
+html[data-theme="dark"] {
+  --bg-main: #000814;
+  --text-main: #ffffff;
+  --text-muted: #cbd5e1;
+  --border-soft: rgba(255,255,255,0.35);
+}
+
+html[data-theme="light"] {
+  --bg-main: #f8fafc;
+  --text-main: #020617;
+  --text-muted: #475569;
+  --border-soft: rgba(2,6,23,0.25);
+}
+
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ================= BODY ================= */
+body {
+  font-family: "Poppins", system-ui, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
+  overflow-x: hidden;
+}
+
+/* ================= NAVBAR ================= */
+.main-nav {
+  width: 100%;
+  padding: 8px 20px;
+  position: fixed;
+  top: 40px;
+  left: 0;
+  z-index: 100;
+  background: transparent;
+}
+
+.main-nav::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0.18),
+    rgba(255,255,255,0)
+  );
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  height: 34px;
+  filter: grayscale(100%) brightness(0.85);
+  opacity: 0.85;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.nav-right a {
+  margin-left: 22px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.nav-right a:hover {
+  color: var(--text-main);
+}
+
+.menu-toggle,
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border-soft);
+  color: var(--text-main);
+  border-radius: 999px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 1.6rem;
+  border: none;
+}
+
+/* ================= MOBILE MENU ================= */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(14px);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}
+
+.mobile-menu.is-open {
+  display: flex;
+}
+
+.mobile-menu a {
+  font-size: 1rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.mobile-menu-close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+/* ================= HERO ================= */
+.hero-container {
+  min-height: 100vh;
+  padding-top: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+
+.hero-logo {
+  width: min(80%, 620px);
+  filter: drop-shadow(0 12px 35px rgba(0,0,0,0.45));
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+}
+
+.hero-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: rgba(255,255,255,0.05);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+/* ================= VIDEO BG ================= */
+.yt-bg-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  overflow: hidden;
+}
+
+.yt-bg-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200vw;
+  height: 200vh;
+  transform: translate(-50%, -50%);
+  border: none;
+  pointer-events: none;
+  filter: blur(8px) brightness(0.6);
+}
+
+/* ================= FOOTER ================= */
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 18px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .nav-right {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-logo {
+    height: 28px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .hero-logo {
+    width: min(90%, 420px);
+  }
+
+  .main-nav {
+    top: 20px;
+  }
+}
+  </style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<header class="main-nav">
+  <div class="nav-inner">
+    <img src="assets/AH.png" alt="AIESEC logo" class="nav-logo">
+
+    <nav class="nav-right">
+      <a href="index.html">Home</a>
+      <a href="goals.html">Goals</a>
+      <a href="strategies.html">Strategies</a>
+      <a href="metrics.html">Metrics</a>
+      <a href="game.html">Game</a>
+    </nav>
+
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+  </div>
+</header>
+
+<!-- ================= MOBILE MENU ================= -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="menuClose">✕</button>
+  <a href="index.html">Home</a>
+  <a href="goals.html">Goals</a>
+  <a href="strategies.html">Strategies</a>
+  <a href="metrics.html">Metrics</a>
+  <a href="game.html">Game</a>
+</div>
+
+<!-- ================= VIDEO BG ================= -->
+<div class="yt-bg-wrapper">
+  <iframe
+    class="yt-bg-video"
+    src="https://www.youtube.com/embed/Mst0ZeaWsV8?autoplay=1&mute=1&controls=0&loop=1&playlist=Mst0ZeaWsV8"
+    allow="autoplay"
+  ></iframe>
+</div>
+
+<!-- ================= HERO ================= -->
+<section class="hero-container">
+  <img src="assets/A2030.png" alt="A2030 Logo" class="hero-logo">
+
+  <div class="hero-actions">
+    <button class="hero-btn" onclick="location.href='goals.html'">Discover the Vision</button>
+    <button class="hero-btn" onclick="location.href='game.html'">Feeling Lucky!</button>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  Copyrights reserved for AIESEC in Tunisia — Developed by Tarek Ben El Mekki
+</footer>
+
+<script>
+/* ================= MOBILE MENU ================= */
+const menuToggle = document.getElementById("menuToggle");
+const menuClose = document.getElementById("menuClose");
+const mobileMenu = document.getElementById("mobileMenu");
+
+menuToggle?.addEventListener("click", () => mobileMenu.classList.add("is-open"));
+menuClose?.addEventListener("click", () => mobileMenu.classList.remove("is-open"));
+
+mobileMenu?.querySelectorAll("a").forEach(link =>
+  link.addEventListener("click", () => mobileMenu.classList.remove("is-open"))
+);
+
+/* ================= THEME TOGGLE ================= */
+const root = document.documentElement;
+const themeToggle = document.getElementById("themeToggle");
+
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme) {
+  root.setAttribute("data-theme", savedTheme);
+} else {
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  root.setAttribute("data-theme", prefersDark ? "dark" : "light");
+}
+
+function updateThemeIcon() {
+  themeToggle.textContent =
+    root.getAttribute("data-theme") === "dark" ? "🌙" : "☀️";
+}
+updateThemeIcon();
+
+themeToggle.addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  localStorage.setItem("theme", next);
+  updateThemeIcon();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>A2030 – Hero</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050816;
+      --card-bg: #0d1726;
+      --accent-blue: #2196f3;
+      --accent-green: #21c47b;
+      --accent-orange: #ff9800;
+      --accent-red: #ff4757;
+      --accent-purple: #9c27b0;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --radius-xl: 28px;
+      --transition-fast: 180ms ease-out;
+      --transition-med: 260ms ease;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.65);
+      --tunisian-red: #e70033;
+      --tunisian-gold: #ffd700;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text-main);
+      background: radial-gradient(circle at top, #0b3c5d, #050816 55%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ===== BACKGROUND VIDEO ===== */
+    .hero-bg-video {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      overflow: hidden;
+    }
+
+    .hero-bg-video iframe {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(8px) brightness(0.3) saturate(0.8);
+      pointer-events: none;
+    }
+
+    .hero-video-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(231, 0, 51, 0.15), rgba(5, 8, 22, 0.95));
+    }
+
+    /* ===== MINIMALIST NAVBAR (Matches Goals Page) ===== */
+    .main-nav {
+      width: 100%;
+      max-width: 1200px;
+      padding: 12px 0;
+      background: transparent;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(13, 23, 38, 0.6);
+      margin-bottom: 32px;
+    }
+
+    /* full-width gray line under navbar */
+    .main-nav::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.18) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    /* logo */
+    .nav-logo {
+      height: 34px;
+      width: auto;
+      filter: grayscale(100%) brightness(0.85);
+      opacity: 0.85;
+      transition: opacity var(--transition-fast);
+    }
+
+    .nav-logo:hover {
+      opacity: 1;
+    }
+
+    /* nav links */
+    .nav-right a {
+      margin-left: 22px;
+      font-size: 0.9rem;
+      color: #d1d5db;
+      text-decoration: none;
+      transition: color 0.2s ease;
+      position: relative;
+      padding: 8px 0;
+    }
+
+    .nav-right a:hover {
+      color: #ffffff;
+    }
+
+    .nav-right a::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--tunisian-red), var(--tunisian-gold));
+      transition: width var(--transition-med);
+    }
+
+    .nav-right a:hover::after {
+      width: 100%;
+    }
+
+    /* ===== HERO CONTAINER (Matches Page-Shell from Goals) ===== */
+    .hero-shell {
+      width: 100%;
+      max-width: 1100px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(15,23,42,0.96));
+      box-shadow: var(--shadow-soft);
+      padding: 40px clamp(20px, 4vw, 50px);
+      position: relative;
+      overflow: hidden;
+      margin-top: 80px;
+      z-index: 10;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Subtle gradient border effect */
+    .hero-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-xl);
+      padding: 1px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(231, 0, 51, 0.3));
+      -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* ===== HERO HEADER (Matches Page-Header Style) ===== */
+    .hero-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .hero-header__badge {
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      background: rgba(231, 0, 51, 0.1);
+      color: #ff8fa3;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .hero-header__title {
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .hero-header__title span.highlight {
+      background: linear-gradient(120deg, var(--tunisian-red), var(--tunisian-gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+    }
+
+    .hero-header__subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .hero-header__tunisia {
+      color: var(--tunisian-gold);
+      font-weight: 600;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .hero-header__tunisia i {
+      color: var(--tunisian-red);
+    }
+
+    /* ===== HERO LOGO STYLING ===== */
+    .hero-logo-container {
+      position: relative;
+      margin: 30px 0 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-logo {
+      width: min(80%, 500px);
+      height: auto;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
+      z-index: 2;
+      position: relative;
+    }
+
+    .logo-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120%;
+      height: 120%;
+      background: radial-gradient(circle, rgba(231, 0, 51, 0.3) 0%, transparent 70%);
+      filter: blur(40px);
+      opacity: 0.5;
+      z-index: 1;
+    }
+
+    /* ===== COUNTDOWN (Matches Goal Card Styling) ===== */
+    .countdown-container {
+      background: radial-gradient(circle at 0 0,
+                rgba(255,255,255,0.08),
+                rgba(12, 20, 33, 0.98));
+      border-radius: var(--radius-xl);
+      padding: 5px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      margin: 30px auto;
+      max-width: 500px;
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .countdown-container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, rgba(231, 0, 51, 0.1), rgba(255, 215, 0, 0.1));
+      z-index: -1;
+    }
+
+    .hero-countdown {
+      border: none;
+      border-radius: calc(var(--radius-xl) - 5px);
+      padding: 22px 40px;
+      background: radial-gradient(circle at top,
+                rgba(255,255,255,0.1),
+                rgba(5, 12, 24, 0.95));
+      color: var(--text-main);
+      font-size: 1.3rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+      font-family: "Poppins", sans-serif;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: transform var(--transition-med), box-shadow var(--transition-med);
+      width: 100%;
+      z-index: 1;
+    }
+
+    .hero-countdown:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(231, 0, 51, 0.3);
+    }
+
+    .hero-countdown::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--tunisian-red), var(--tunisian-gold));
+      z-index: 2;
+    }
+
+    .countdown-icon {
+      font-size: 1.8rem;
+      color: var(--tunisian-gold);
+    }
+
+    #countdownText {
+      display: flex;
+      gap: 10px;
+      font-family: monospace;
+      font-weight: 700;
+    }
+
+    #countdownText span {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 12px;
+      border-radius: 12px;
+      min-width: 70px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #countdownText span:first-child {
+      color: var(--tunisian-red);
+    }
+
+    #countdownText span:nth-child(2) {
+      color: var(--tunisian-gold);
+    }
+
+    #countdownText span:nth-child(3) {
+      color: #4fc3f7;
+    }
+
+    #countdownText span:last-child {
+      color: #81c784;
+    }
+
+    /* ===== DISCOVER BUTTON (Matches Goal CTA Style) ===== */
+    .hero-discover-container {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .hero-discover {
+      border: none;
+      outline: none;
+      padding: 18px 50px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top,
+                rgba(255,255,255,0.12),
+                rgba(5, 12, 24, 0.98));
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+      box-shadow: 0 15px 35px rgba(231, 0, 51, 0.4);
+      transition: transform var(--transition-med), box-shadow var(--transition-med);
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid rgba(231, 0, 51, 0.3);
+    }
+
+    .hero-discover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(231, 0, 51, 0.6);
+    }
+
+    .hero-discover::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, rgba(231, 0, 51, 0.3), rgba(255, 215, 0, 0.2));
+      z-index: -1;
+      opacity: 0;
+      transition: opacity var(--transition-med);
+    }
+
+    .hero-discover:hover::before {
+      opacity: 1;
+    }
+
+    .hero-discover i {
+      font-size: 1.3rem;
+      color: var(--tunisian-gold);
+    }
+
+    /* ===== FOOTER (Matches Goals Page Footer) ===== */
+    .site-footer {
+      width: 100%;
+      padding: 25px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 40px;
+      position: relative;
+      z-index: 20;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-text {
+      color: #9ca3af;
+      font-size: 0.85rem;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    /* Hide mobile text on desktop */
+    .desktop-only {
+      display: inline;
+    }
+
+    .mobile-only {
+      display: none;
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 900px) {
+      body {
+        align-items: flex-start;
+        padding: 10px;
+        padding-top: 80px;
+      }
+
+      .hero-shell {
+        margin-top: 20px;
+        padding: 30px 20px;
+      }
+
+      .main-nav {
+        top: 10px;
+        width: calc(100% - 20px);
+      }
+
+      .nav-right a {
+        margin-left: 16px;
+        font-size: 0.85rem;
+      }
+
+      .hero-logo {
+        width: min(90%, 350px);
+      }
+
+      .hero-countdown {
+        padding: 18px 20px;
+        font-size: 1.1rem;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      #countdownText {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      #countdownText span {
+        min-width: 60px;
+        padding: 6px 10px;
+      }
+
+      .hero-discover {
+        padding: 16px 35px;
+        font-size: 1rem;
+      }
+
+      /* MOBILE VERSION */
+      .desktop-only {
+        display: none;
+      }
+
+      .mobile-only {
+        display: block;
+        text-align: center;
+        margin-bottom: 2px;
+      }
+
+      .footer-text {
+        line-height: 1.4;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-header__title {
+        font-size: 1.8rem;
+      }
+
+      .hero-header__title span.highlight {
+        font-size: 2.2rem;
+      }
+
+      .hero-header__subtitle {
+        font-size: 0.95rem;
+      }
+
+      .hero-countdown {
+        font-size: 1rem;
+      }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .hero-logo {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    /* ===== DECORATIVE ELEMENTS ===== */
+    .decorative-dots {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .dot {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+    }
+
+    .dot:nth-child(3n) {
+      background: rgba(231, 0, 51, 0.4);
+    }
+
+    .dot:nth-child(5n) {
+      background: rgba(255, 215, 0, 0.4);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background Video -->
+  <div class="hero-bg-video">
+    <iframe
+      class="yt-bg-video"
+      src="https://www.youtube.com/embed/Mst0ZeaWsV8?autoplay=1&mute=1&controls=0&loop=1&playlist=Mst0ZeaWsV8&modestbranding=1&rel=0&playsinline=1&start=10"
+      allow="autoplay"
+    ></iframe>
+    <div class="hero-video-overlay"></div>
+  </div>
+
+  <!-- Decorative Dots -->
+  <div class="decorative-dots" id="decorativeDots"></div>
+
+  <!-- Navbar -->
+  <header class="main-nav">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <img src="assets/AH.png" alt="AIESEC logo" class="nav-logo" />
+      </div>
+
+      <nav class="nav-right">
+        <a href="#goals">Goals</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Hero Content -->
+  <div class="hero-shell">
+    <div class="hero-header">
+      <div class="hero-header__badge">A2030 Vision</div>
+      
+      <h1 class="hero-header__title">
+        <span>Shaping</span>
+        <span class="highlight">TUNISIA'S FUTURE</span>
+        <span>Through Youth Leadership</span>
+      </h1>
+      
+      <p class="hero-header__subtitle">
+        A bold initiative by AIESEC in Tunisia to empower the next generation of leaders, 
+        drive sustainable growth, and ensure lasting relevance in a rapidly changing world.
+      </p>
+      
+      <div class="hero-header__tunisia">
+        <i class="fas fa-star-and-crescent"></i>
+        <span>تونس • Tunisia</span>
+        <i class="fas fa-handshake"></i>
+      </div>
+    </div>
+
+    <div class="hero-logo-container">
+      <div class="logo-glow"></div>
+      <img src="assets/A2030.png" alt="A2030" class="hero-logo" />
+    </div>
+
+    <div class="countdown-container">
+      <button class="hero-countdown">
+        <i class="fas fa-clock countdown-icon"></i>
+        <span id="countdownText">
+          <span id="days">--</span>
+          <span id="hours">--</span>
+          <span id="minutes">--</span>
+          <span id="seconds">--</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="hero-discover-container">
+      <button class="hero-discover" id="discoverBtn">
+        <i class="fas fa-rocket"></i>
+        Discover the Vision
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-text">
+        <span class="footer-line desktop-only">
+          Copyrights reserved for AIESEC in Tunisia —
+        </span>
+        <span class="footer-line mobile-only">
+          Copyrights reserved for AIESEC in Tunisia
+        </span>
+
+        <span class="footer-line desktop-only">
+          Developed by Tarek Ben El Mekki
+        </span>
+        <span class="footer-line mobile-only">
+          Developed by Tarek Ben El Mekki
+        </span>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // ---------- COUNTDOWN FUNCTIONALITY ----------
+    function updateCountdown() {
+      const target = new Date("2025-12-27T00:00:00").getTime();
+      const now = Date.now();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        document.getElementById('days').textContent = "00";
+        document.getElementById('hours').textContent = "00";
+        document.getElementById('minutes').textContent = "00";
+        document.getElementById('seconds').textContent = "00";
+        
+        // Update button text when countdown finishes
+        const countdownBtn = document.querySelector('.hero-countdown');
+        const icon = countdownBtn.querySelector('i');
+        icon.className = 'fas fa-calendar-check';
+        countdownBtn.style.cursor = 'default';
+        countdownBtn.onclick = null;
+        
+        return;
+      }
+
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((diff / (1000 * 60)) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+
+      document.getElementById('days').textContent = String(d).padStart(2, "0") + "d";
+      document.getElementById('hours').textContent = String(h).padStart(2, "0") + "h";
+      document.getElementById('minutes').textContent = String(m).padStart(2, "0") + "m";
+      document.getElementById('seconds').textContent = String(s).padStart(2, "0") + "s";
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ---------- DISCOVER BUTTON ----------
+    document.getElementById("discoverBtn").addEventListener("click", () => {
+      // Add click animation
+      const btn = event.target.closest('.hero-discover');
+      btn.style.transform = "translateY(-2px) scale(0.98)";
+      btn.style.boxShadow = "0 15px 40px rgba(231, 0, 51, 0.8)";
+      
+      setTimeout(() => {
+        btn.style.transform = "translateY(-5px)";
+        btn.style.boxShadow = "0 20px 50px rgba(231, 0, 51, 0.6)";
+      }, 150);
+      
+      // Navigate after a short delay
+      setTimeout(() => {
+        window.location.href = "goals.html";
+      }, 300);
+    });
+
+    // ---------- CREATE DECORATIVE DOTS ----------
+    function createDecorativeDots() {
+      const container = document.getElementById('decorativeDots');
+      const dotCount = 40;
+      
+      for (let i = 0; i < dotCount; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        
+        // Random position
+        dot.style.left = Math.random() * 100 + '%';
+        dot.style.top = Math.random() * 100 + '%';
+        
+        // Random size
+        const size = 2 + Math.random() * 4;
+        dot.style.width = size + 'px';
+        dot.style.height = size + 'px';
+        
+        // Random opacity
+        dot.style.opacity = 0.2 + Math.random() * 0.4;
+        
+        container.appendChild(dot);
+      }
+    }
+    
+    createDecorativeDots();
+
+    // ---------- NAVBAR SCROLL EFFECT ----------
+    let lastScroll = 0;
+    const navbar = document.querySelector('.main-nav');
+    
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll <= 0) {
+        navbar.style.transform = 'translateX(-50%)';
+        navbar.style.opacity = '1';
+        return;
+      }
+      
+      if (currentScroll > lastScroll && currentScroll > 100) {
+        // Scrolling down
+        navbar.style.transform = 'translateX(-50%) translateY(-100px)';
+        navbar.style.opacity = '0';
+      } else {
+        // Scrolling up
+        navbar.style.transform = 'translateX(-50%)';
+        navbar.style.opacity = '1';
+      }
+      
+      lastScroll = currentScroll;
+    });
+
+    // ---------- COUNTDOWN CLICK EFFECT ----------
+    document.querySelector('.hero-countdown').addEventListener('click', function() {
+      if (this.style.cursor !== 'default') {
+        this.style.transform = 'translateY(-2px) scale(0.98)';
+        setTimeout(() => {
+          this.style.transform = 'translateY(-5px)';
+        }, 150);
+      }
+    });
+  </script>
+</body>
+</html>

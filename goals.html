@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>A2030 – Goals Showcase</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Optional: nice rounded font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================
+   THEME VARIABLES
+========================== */
+
+:root {
+  --radius-xl: 28px;
+  --transition-fast: 180ms ease-out;
+  --transition-med: 260ms ease;
+  --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.65);
+}
+
+    /* DARK THEME (default) */
+    html[data-theme="dark"] {
+      --bg-main: #050816;
+      --bg-card: #0d1726;
+      --bg-elevated: rgba(15,23,42,0.92);
+
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+
+      --border-soft: rgba(148,163,184,0.45);
+
+      --accent-blue: #2196f3;
+      --accent-green: #21c47b;
+      --accent-orange: #ff9800;
+    }
+
+    /* LIGHT THEME */
+    html[data-theme="light"] {
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-elevated: #f1f5f9;
+
+      --text-main: #0f172a;
+      --text-muted: #475569;
+
+      --border-soft: rgba(15,23,42,0.18);
+
+      --accent-blue: #2563eb;
+      --accent-green: #16a34a;
+      --accent-orange: #ea580c;
+    }
+
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+        body {
+  min-height: 100vh;
+  font-family: "Poppins", system-ui, sans-serif;
+  color: var(--text-main);
+  background: radial-gradient(circle at top, var(--accent-blue), var(--bg-main) 60%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+
+
+
+    .page-shell {
+      width: 100%;
+      max-width: 1100px;
+      border-radius: 32px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.08), var(--bg-card));
+      box-shadow: var(--shadow-soft);
+      padding: 32px clamp(20px, 4vw, 40px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .page-header__badge {
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+    }
+
+    .page-header__title {
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      font-weight: 700;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: baseline;
+    }
+
+    .page-header__title span.highlight {
+      background: linear-gradient(120deg, #03a9f4, #00e676);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .page-header__subtitle {
+      margin-top: 4px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 540px;
+    }
+
+    .goals-grid {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .goals-grid {
+        grid-template-columns: 1fr;
+      }
+      body {
+        align-items: flex-start;
+      }
+    }
+
+    .goal-card {
+      position: relative;
+     background: radial-gradient(circle at 0 0,
+    rgba(255,255,255,0.08),
+    var(--bg-card));
+      border-radius: var(--radius-xl);
+      padding: 20px 18px 18px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: transform var(--transition-med), box-shadow var(--transition-med),
+                  border-color var(--transition-med), background var(--transition-med);
+      isolation: isolate;
+    }
+
+    .goal-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top,
+                  rgba(255,255,255,0.14),
+                  transparent 55%);
+      opacity: 0;
+      transition: opacity var(--transition-med);
+      z-index: -1;
+    }
+
+    .goal-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.65);
+      border-color: rgba(255,255,255,0.28);
+    }
+
+    .goal-card:hover::before {
+      opacity: 1;
+    }
+
+    /* tiny colored strip at the top */
+    .goal-card__accent {
+      height: 4px;
+      width: 100%;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      opacity: 0.9;
+    }
+
+    .goal-card[data-goal="leadership"] .goal-card__accent {
+      background: linear-gradient(90deg, #00b3ff, #006eff);
+    }
+    .goal-card[data-goal="growth"] .goal-card__accent {
+      background: linear-gradient(90deg, #00e676, #00b248);
+    }
+    .goal-card[data-goal="relevance"] .goal-card__accent {
+      background: linear-gradient(90deg, #ffb300, #ff7043);
+    }
+
+    .goal-main-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .goal-symbol {
+      flex-shrink: 0;
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: radial-gradient(circle at 20% 0, rgba(255,255,255,0.4), transparent 45%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      transition: transform var(--transition-med);
+    }
+
+    .goal-symbol img {
+      width: 80%;
+      height: auto;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .goal-card:hover .goal-symbol {
+      transform: scale(1.05) translateY(-2px);
+    }
+
+    .goal-texts {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .goal-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .goal-slogan {
+      font-size: 0.8rem;
+      text-transform: lowercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+    }
+
+    .goal-hover-card {
+      margin-top: 14px;
+      background: rgba(15,23,42,0.85);
+      border-radius: 18px;
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border: 1px solid rgba(148,163,184,0.4);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity var(--transition-med), transform var(--transition-med);
+      pointer-events: none;
+    }
+
+    .goal-card:hover .goal-hover-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .goal-hover-card__label {
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      opacity: 0.75;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .goal-hover-card__body {
+      line-height: 1.4;
+    }
+
+    .goal-cta {
+      margin-top: 16px;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.92);
+      pointer-events: none; /* click is handled on whole card */
+    }
+
+    .goal-cta span.chevron {
+      font-size: 0.9rem;
+      transform: translateY(1px);
+    }
+
+    /* Colorize CTA glow per goal */
+    .goal-card[data-goal="leadership"] .goal-cta {
+      box-shadow: 0 0 0 1px rgba(33,150,243,0.3);
+    }
+    .goal-card[data-goal="growth"] .goal-cta {
+      box-shadow: 0 0 0 1px rgba(76,175,80,0.3);
+    }
+    .goal-card[data-goal="relevance"] .goal-cta {
+      box-shadow: 0 0 0 1px rgba(255,152,0,0.35);
+    }
+
+    /* MODAL / full-page card */
+.goal-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: flex-end;   /* 🔥 stick to bottom */
+  justify-content: center;
+  z-index: 40;
+  padding-bottom: 32px;   /* breathing space from viewport bottom */
+}
+
+
+    .goal-modal.is-open {
+      display: flex;
+    }
+
+    .goal-modal__backdrop {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(15,118,255,0.35), rgba(3,7,18,0.96));
+      backdrop-filter: blur(16px);
+    }
+
+    .goal-modal__content {
+      position: relative;
+      max-width: 900px;
+      width: min(92vw, 900px);
+      max-height: 90vh;
+      background: radial-gradient(circle at top left,
+    rgba(255,255,255,0.12),
+    var(--bg-card));
+      border-radius: 32px;
+      box-shadow: var(--shadow-soft);
+      padding: 26px 24px 24px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.35fr);
+      gap: 22px;
+      animation: modalIn 260ms ease-out;
+    }
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+    @media (max-width: 780px) {
+      .goal-modal__content {
+        grid-template-columns: minmax(0, 1fr);
+        max-height: 92vh;
+      }
+    }
+
+    .goal-modal__close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: none;
+      outline: none;
+      background: rgba(15,23,42,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--text-main);
+      cursor: pointer;
+      box-shadow: 0 0 0 1px rgba(148,163,184,0.6);
+      transition: background var(--transition-fast), transform var(--transition-fast);
+      z-index: 2;
+    }
+
+    .goal-modal__close:hover {
+      background: rgba(30,64,175,0.95);
+      transform: translateY(-1px);
+    }
+
+    .goal-modal__symbol-shell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .goal-modal__symbol {
+      width: 150px;
+      height: 150px;
+      border-radius: 40px;
+      background: radial-gradient(circle at 20% 0, rgba(255,255,255,0.45), transparent 46%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.85);
+    }
+
+    .goal-modal__symbol img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .goal-modal__tag {
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      color: var(--text-muted);
+    }
+
+    .goal-modal__body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .goal-modal__eyebrow {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      opacity: 0.8;
+    }
+
+    .goal-modal__title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: baseline;
+    }
+
+    .goal-modal__title span.slogan {
+      font-size: 0.95rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: lowercase;
+      color: var(--text-muted);
+    }
+
+    .goal-modal__description {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+
+    .goal-modal__list {
+      list-style: none;
+      margin-top: 4px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 14px;
+      font-size: 0.9rem;
+    }
+
+    .goal-modal__list li {
+      padding-left: 18px;
+      position: relative;
+      color: #e5e7eb;
+    }
+
+    .goal-modal__list li::before {
+      content: "▹";
+      position: absolute;
+      left: 2px;
+      top: 0;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 640px) {
+      .goal-modal__list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .goal-modal__footer {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .goal-modal__pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148,163,184,0.7);
+    }
+
+    /* color accents for modal – set via JS by adding a class */
+    .goal-modal.leadership-theme .goal-modal__title span.main {
+      color: #4fc3f7;
+    }
+
+    .goal-modal.growth-theme .goal-modal__title span.main {
+      color: #4caf50;
+    }
+
+    .goal-modal.relevance-theme .goal-modal__title span.main {
+      color: #ffb74d;
+     }
+    /* --------------------------------------------------
+   MAKE DESCRIPTION ALWAYS VISIBLE ON TOUCH DEVICES
+    -----------------------------------------------------*/
+
+    /* Detect devices that do NOT support hover */
+    @media (hover: none) and (pointer: coarse) {
+    .goal-hover-card {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        pointer-events: none;
+    }
+
+    /* Remove hover animations since they don't apply */
+    .goal-card:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: transparent;
+    }
+
+    .goal-card:hover .goal-symbol {
+        transform: none;
+    }
+    }
+
+   /* ===== Modal previous / next goal buttons ===== */
+
+.goal-modal__nav {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 6px;
+  flex-wrap: wrap;
+}
+
+.goal-nav-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(252, 211, 77, 0.7);
+  background: radial-gradient(circle at 0 0,
+              rgba(255, 249, 196, 0.95),
+              rgba(252, 211, 77, 0.8));
+  color: #78350f;
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+  outline: none;
+  transition: transform 150ms ease-out,
+              box-shadow 150ms ease-out,
+              filter 150ms ease-out;
+}
+
+.goal-nav-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.4);
+  filter: brightness(1.02);
+}
+
+.goal-nav-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+}
+
+.goal-nav-thumb {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.goal-nav-thumb img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.goal-nav-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+
+.goal-nav-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  opacity: 0.7;
+}
+
+.goal-nav-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .goal-nav-btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* ===== Mobile full-screen modal card ===== */
+@media (max-width: 780px) {
+  .goal-modal {
+    align-items: stretch;         /* modal fills the screen vertically   */
+    justify-content: flex-start;
+  }
+
+  .goal-modal__content {
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;               /* use device viewport height          */
+    max-height: 100dvh;
+    border-radius: 0;             /* card touches edges like a full page */
+    margin: 0;
+    padding: 18px 16px 26px;
+    overflow-y: auto;             /* 🔥 scroll INSIDE the card           */
+    overflow-x: hidden;
+  }
+
+  /* optional: keep symbol section from shrinking too much */
+  .goal-modal__symbol-shell {
+    flex-shrink: 0;
+  }
+}
+
+/* ===== Footer Styling ===== */
+
+.site-footer {
+  width: 100%;
+  padding: 22px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-text {
+  color: #9ca3af; /* light gray */
+  font-size: 0.8rem;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.aiesec-human-logo {
+  width: 36px;
+  height: auto;
+  opacity: 0.75;          /* subtle gray effect */
+  filter: grayscale(100%);
+}
+/* Hide mobile text on desktop */
+.desktop-only {
+  display: inline;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* MOBILE VERSION */
+@media (max-width: 640px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;      /* breaks into two stacked lines */
+    text-align: center;
+    margin-bottom: 2px;
+  }
+
+  .footer-text {
+    line-height: 1.4;
+  }
+}
+/* =======================
+   Minimalist Navigation
+   ======================= */
+
+.main-nav {
+  width: 100%;
+  padding: 8px 20px;   /* was 10px 20px – slightly slimmer */
+  background: transparent;
+  position: relative;
+  z-index: 50;
+  margin-bottom: 32px; /* 🔥 more space above the card */
+}
+
+/* full-width gray line under navbar */
+.main-nav::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 60%; /* length of the line – adjust 40–80% if you want */
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* logo */
+.nav-logo {
+  height: 34px;
+  width: auto;
+  filter: grayscale(100%) brightness(0.85);
+  opacity: 0.85;
+}
+
+/* nav links */
+.nav-right a {
+  margin-left: 22px;
+  font-size: 0.9rem;
+  color: #d1d5db; /* light gray */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-right a:hover {
+  color: #ffffff;
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+  .nav-right a {
+    margin-left: 14px;
+    font-size: 0.82rem;
+  }
+
+  .nav-logo {
+    height: 28px;
+  }
+}
+/* Mobile: prevent modal content from sliding under the navbar */
+@media (max-width: 768px) {
+  .goal-modal__content {
+    padding-top: 70px !important; /* Creates space under navbar */
+  }
+}
+/* ===========================
+   HERO BACKGROUND VIDEO
+=========================== */
+.hero-bg-video {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  overflow: hidden;
+}
+
+.hero-bg-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(6px) brightness(0.28) saturate(0.6);  
+  /* 
+     blur(6px)          → softer, more discreet
+     brightness(0.28)   → makes it darker
+     saturate(0.6)      → less colorful, more elegant
+  */
+}
+
+/* dark + blue gradient overlay */
+.hero-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(41, 98, 255, 0.28), rgba(0, 4, 15, 0.93));
+}
+
+/* ===========================
+   HERO SECTION STYLING
+=========================== */
+.hero-section {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 90px; /* space under existing header */
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  text-align: center;
+  padding: 20px 30px;
+}
+
+.hero-logo {
+  width: min(80%, 620px);
+  height: auto;
+  filter: drop-shadow(0 10px 35px rgba(0,0,0,0.45));
+}
+
+/* Countdown pill */
+.hero-countdown {
+  border: none;
+  outline: none;
+  padding: 10px 26px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #ff9800, #ff7043);
+  color: #fff;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(255, 152, 0, 0.45);
+  transition: transform 150ms ease-out;
+}
+
+.hero-countdown:hover {
+  transform: translateY(-2px);
+}
+
+.hero-countdown-icon {
+  opacity: 0.9;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero-logo {
+    width: min(90%, 420px);
+  }
+
+  .hero-section {
+    padding-top: 110px; /* header is taller on mobile */
+  }
+
+  .hero-countdown {
+    font-size: 0.8rem;
+    padding: 8px 20px;
+  }
+}
+
+/* ==========================
+   GOAL METRICS (MODAL)
+========================== */
+
+.goal-metrics {
+  margin-top: 14px;
+}
+
+.goal-metrics__label {
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.goal-metrics__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.metric-pill {
+  position: relative;
+  padding: 8px 14px;
+  border-radius: 999px;
+ background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+/* Desktop hover lift */
+.metric-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.45);
+}
+
+/* Tooltip (shared desktop + mobile) */
+.metric-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  max-width: min(320px, calc(100vw - 32px));
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+  z-index: 20;
+  white-space: normal;
+}
+
+/* Desktop hover */
+.metric-pill:hover .metric-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Mobile behavior */
+@media (hover: none) and (pointer: coarse) {
+
+  .metric-pill {
+    cursor: pointer;
+  }
+
+  .metric-pill.is-open .metric-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Keep tooltip inside modal bounds */
+  .goal-modal__content {
+    overflow-x: hidden;
+  }
+}
+
+.theme-toggle {
+  margin-left: 16px;
+  background: transparent;
+  border: 1px solid var(--border-soft);
+  color: var(--text-main);
+  border-radius: 999px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--bg-elevated);
+}
+
+/* ==================================================
+   CONTRAST + LIGHT MODE FIXES (SAFE OVERRIDES)
+   ADD AT END — DO NOT REMOVE EXISTING CSS
+================================================== */
+
+/* Fix snapshot dark blocks on light cards */
+.goal-hover-card {
+  background: var(--bg-elevated);
+  color: var(--text-main);
+  border-color: var(--border-soft);
+}
+
+/* Fix white text inside modal list */
+.goal-modal__list li {
+  color: var(--text-main);
+}
+
+/* Ensure modal titles readable in light mode */
+.goal-modal__title {
+  color: var(--text-main);
+}
+
+/* Fix CTA contrast */
+.goal-cta {
+  background: var(--bg-elevated);
+  color: var(--text-main);
+  border-color: var(--border-soft);
+}
+
+/* Fix metric pills */
+.metric-pill {
+  background: var(--bg-elevated);
+  color: var(--text-main);
+  border-color: var(--border-soft);
+}
+
+/* Fix tooltip readability */
+.metric-tooltip {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  border-color: var(--border-soft);
+}
+
+/* Navbar links contrast in light mode */
+html[data-theme="light"] .nav-right a {
+  color: #334155;
+}
+
+html[data-theme="light"] .nav-right a:hover {
+  color: #020617;
+}
+.goal-modal__close {
+  color: #ffffff !important;
+  background: rgba(0, 0, 0, 0.55) !important;
+}
+
+/* ==========================
+   LOADING SCREEN
+========================== */
+
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: radial-gradient(
+    circle at top,
+    var(--accent-blue),
+    var(--bg-main) 65%
+  );
+
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+
+#loading-screen.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loading-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.loading-gif {
+  width: 120px;
+  height: auto;
+  filter: drop-shadow(0 14px 35px rgba(0,0,0,0.45));
+}
+
+.loading-text {
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-main);
+  opacity: 0.85;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .loading-gif {
+    width: 90px;
+  }
+
+  .loading-text {
+    font-size: 0.75rem;
+  }
+}
+
+/* ================= NAVBAR ================= */
+.main-nav {
+  width: 100%;
+  padding: 8px 20px;
+  background: transparent;
+  position: fixed;
+  top: 40px;              /* lowered navbar */
+  left: 0;
+  z-index: 100;           /* above content, below modals */
+}
+
+.main-nav::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0.18),
+    rgba(255,255,255,0)
+  );
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  height: 34px;
+  filter: grayscale(100%) brightness(0.85);
+  opacity: 0.85;
+}
+
+/* Desktop links */
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.nav-right a {
+  margin-left: 22px;
+  font-size: 0.9rem;
+  color: #d1d5db;
+  text-decoration: none;
+}
+
+.nav-right a:hover {
+  color: #ffffff;
+}
+
+/* Hamburger */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+/* ================= MOBILE MENU ================= */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(14px);
+  z-index: 200;           /* above navbar, below loading screen */
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}
+
+.mobile-menu.is-open {
+  display: flex;
+}
+
+.mobile-menu a {
+  font-size: 1rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.mobile-menu-close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .nav-right {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-logo {
+    height: 28px;
+  }
+
+  .main-nav {
+    top: 20px; /* tighter on mobile */
+  }
+}
+
+/* =========================================
+   MOBILE FIX: PREVENT CONTENT UNDER HEADER
+========================================= */
+
+@media (max-width: 768px) {
+  .page-shell {
+    margin-top: 96px; /* header height + spacing */
+  }
+}
+
+
+  </style>
+</head>
+<body>
+
+<header class="main-nav">
+  <div class="nav-inner">
+    <img src="assets/AH.png" alt="AIESEC logo" class="nav-logo">
+
+    <nav class="nav-right">
+      <a href="index.html">Home</a>
+      <a href="goals.html">Goals</a>
+      <a href="strategies.html">Strategies</a>
+      <a href="metrics.html">Metrics</a>
+      <a href="game.html">Game</a>
+    </nav>
+
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+  </div>
+</header>
+
+
+<!-- ================= MOBILE MENU ================= -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="menuClose">✕</button>
+  <a href="index.html">Home</a>
+  <a href="goals.html">Goals</a>
+  <a href="strategies.html">Strategies</a>
+  <a href="metrics.html">Metrics</a>
+  <a href="game.html">Game</a>
+</div>
+
+
+<div class="page-shell">
+  <header class="page-header">
+    <div>
+      <div class="page-header__badge">A2030 Vision</div>
+      <div class="page-header__title">
+        <span class="highlight">Three Goals</span>
+        <span>in exchange</span>
+      </div>
+      <p class="page-header__subtitle">
+        Hover a symbol to reveal a quick description. Click any goal to open a
+        full-screen card with more context, actions and key metrics.
+      </p>
+    </div>
+  </header>
+
+<section class="goals-grid" aria-label="Strategic goals">
+
+  <!-- GOAL 1 -->
+  <article
+    class="goal-card"
+    data-goal="beyond-limits"
+    data-long-title="Beyond Limits, A Daring Tunisia"
+    data-long-description="Tunisia’s future depends on young people who choose courage over fear. This goal is about shifting mindsets from limitation to boldness, normalizing initiative, risk-taking, and conscious leadership as a way of life."
+    data-long-items='[
+      "Embed a culture of conscious leadership across all LC experiences",
+      "Increase youth engagement in exchange without hesitation or fear",
+      "Position AIESEC as a movement chosen by conviction, not chance",
+      "Encourage young Tunisians to initiate projects that shape national future"
+    ]'
+    data-theme="leadership-theme"
+    tabindex="0"
+  >
+    <div class="goal-card__accent"></div>
+
+    <div class="goal-main-row">
+      <div class="goal-symbol" aria-hidden="true">
+        <img src="assets/9.png" alt="">
+      </div>
+
+      <div class="goal-texts">
+        <h2 class="goal-title">Beyond Limits</h2>
+        <div class="goal-slogan">a daring Tunisia</div>
+      </div>
+    </div>
+
+    <div class="goal-hover-card" aria-hidden="true">
+      <span class="goal-hover-card__label">Snapshot</span>
+      <p class="goal-hover-card__body">
+        Build a national youth mindset where leadership is chosen,
+        action is normal, and dreaming big is no longer the exception.
+      </p>
+    </div>
+
+    <div class="goal-cta">
+      <span>Open vision</span>
+      <span class="chevron">▸</span>
+    </div>
+  </article>
+
+  <!-- GOAL 2 -->
+  <article
+    class="goal-card"
+    data-goal="lead-today"
+    data-long-title="Lead Today. Enable Tomorrow’s Solutions."
+    data-long-description="Youth are not the leaders of tomorrow; they are the solution today. This goal positions AIESEC as the national reference that enables young people to discover themselves, grow through experience, and act on real societal challenges."
+    data-long-items='[
+      "Establish AIESEC as Tunisia’s reference for youth leadership development",
+      "Enable experiential learning that transforms potential into action",
+      "Develop leaders who act with purpose on national challenges",
+      "Prove that Tunisia’s solutions come from its youth"
+    ]'
+    data-theme="growth-theme"
+    tabindex="0"
+  >
+    <div class="goal-card__accent"></div>
+
+    <div class="goal-main-row">
+      <div class="goal-symbol" aria-hidden="true">
+        <img src="assets/5.png" alt="">
+      </div>
+
+      <div class="goal-texts">
+        <h2 class="goal-title">Lead Today</h2>
+        <div class="goal-slogan">enable tomorrow</div>
+      </div>
+    </div>
+
+    <div class="goal-hover-card" aria-hidden="true">
+      <span class="goal-hover-card__label">Snapshot</span>
+      <p class="goal-hover-card__body">
+        Activate youth leadership today to deliver real, relevant
+        solutions for Tunisia’s present and future challenges.
+      </p>
+    </div>
+
+    <div class="goal-cta">
+      <span>Open leadership impact</span>
+      <span class="chevron">▸</span>
+    </div>
+  </article>
+
+  <!-- GOAL 3 -->
+  <article
+    class="goal-card"
+    data-goal="meaningful-impact"
+    data-long-title="Reference Meaningful Impact"
+    data-long-description="Impact must be credible, contextual, and measurable. This goal restores AIESEC’s national relevance by ensuring every experience, partnership, and project responds directly to Tunisia’s real needs."
+    data-long-items='[
+      "Customize experiences and projects to Tunisia’s context",
+      "Build trust through measurable, youth-led impact",
+      "Redefine national standards for purpose-driven action",
+      "Position AIESEC as a trusted movement for sustainable change"
+    ]'
+    data-theme="relevance-theme"
+    tabindex="0"
+  >
+    <div class="goal-card__accent"></div>
+
+    <div class="goal-main-row">
+      <div class="goal-symbol" aria-hidden="true">
+        <img src="assets/7.png" alt="">
+      </div>
+
+      <div class="goal-texts">
+        <h2 class="goal-title">Meaningful Impact</h2>
+        <div class="goal-slogan">as a reference</div>
+      </div>
+    </div>
+
+    <div class="goal-hover-card" aria-hidden="true">
+      <span class="goal-hover-card__label">Snapshot</span>
+      <p class="goal-hover-card__body">
+        Become the national reference for credible, youth-led,
+        and context-driven impact that Tunisia can trust.
+      </p>
+    </div>
+
+    <div class="goal-cta">
+      <span>Open impact vision</span>
+      <span class="chevron">▸</span>
+    </div>
+  </article>
+
+</section>
+
+</div>
+
+<!-- MODAL -->
+<div class="goal-modal" id="goalModal" aria-modal="true" role="dialog" aria-hidden="true">
+  <div class="goal-modal__backdrop"></div>
+
+  <div class="goal-modal__content">
+    <button class="goal-modal__close" type="button" aria-label="Close goal view">
+      &times;
+    </button>
+
+    <div class="goal-modal__symbol-shell">
+      <div class="goal-modal__symbol">
+        <img src="" alt="" id="goalModalSymbol">
+      </div>
+      <div class="goal-modal__tag" id="goalModalTag">AIESEC in Tunisia 2030</div>
+    </div>
+
+    <div class="goal-modal__body">
+      <div class="goal-modal__eyebrow">2030 Strategic Direction</div>
+
+      <h2 class="goal-modal__title">
+        <span class="main" id="goalModalTitle"></span>
+        <span class="slogan" id="goalModalSlogan"></span>
+      </h2>
+
+      <p class="goal-modal__description" id="goalModalDescription"></p>
+
+      <div class="goal-metrics">
+        <span class="goal-metrics__label">Strategic signals</span>
+        <div class="goal-metrics__grid" id="goalModalMetrics"></div>
+      </div>
+
+      <ul class="goal-modal__list" id="goalModalList"></ul>
+
+      <div class="goal-modal__footer">
+        <span class="goal-modal__pill">Click outside to close</span>
+        <span>
+          Use this slide to facilitate discussion, alignment, and commitment during workshops.
+        </span>
+      </div>
+
+      <div class="goal-modal__nav">
+        <button class="goal-nav-btn goal-nav-prev" type="button">
+          <span class="goal-nav-thumb">
+            <img id="goalNavPrevThumb" src="" alt="">
+          </span>
+          <span class="goal-nav-text">
+            <span class="goal-nav-label">Previous direction</span>
+            <span class="goal-nav-title" id="goalNavPrevTitle"></span>
+          </span>
+        </button>
+
+        <button class="goal-nav-btn goal-nav-next" type="button">
+          <span class="goal-nav-text">
+            <span class="goal-nav-label">Next direction</span>
+            <span class="goal-nav-title" id="goalNavNextTitle"></span>
+          </span>
+          <span class="goal-nav-thumb">
+            <img id="goalNavNextThumb" src="" alt="">
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+(function () {
+
+  /* =========================
+     ELEMENTS
+  ========================== */
+  const root = document.documentElement;
+
+  const modal = document.getElementById("goalModal");
+  const modalSymbol = document.getElementById("goalModalSymbol");
+  const modalTitle = document.getElementById("goalModalTitle");
+  const modalSlogan = document.getElementById("goalModalSlogan");
+  const modalDescription = document.getElementById("goalModalDescription");
+  const modalList = document.getElementById("goalModalList");
+  const modalMetrics = document.getElementById("goalModalMetrics");
+
+  const closeButton = modal?.querySelector(".goal-modal__close");
+  const cards = Array.from(document.querySelectorAll(".goal-card"));
+
+  const prevBtn = document.querySelector(".goal-nav-prev");
+  const nextBtn = document.querySelector(".goal-nav-next");
+  const prevTitle = document.getElementById("goalNavPrevTitle");
+  const nextTitle = document.getElementById("goalNavNextTitle");
+  const prevThumb = document.getElementById("goalNavPrevThumb");
+  const nextThumb = document.getElementById("goalNavNextThumb");
+
+  const themeToggle = document.getElementById("themeToggle");
+
+  let lastFocusedCard = null;
+  let currentIndex = -1;
+
+  /* =========================
+     AUTO THEME (SYSTEM / PHONE)
+  ========================== */
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme) {
+    root.setAttribute("data-theme", savedTheme);
+  } else {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    root.setAttribute("data-theme", prefersDark ? "dark" : "light");
+  }
+
+  function updateThemeIcon() {
+    if (!themeToggle) return;
+    themeToggle.textContent =
+      root.getAttribute("data-theme") === "dark" ? "🌙" : "☀️";
+  }
+  updateThemeIcon();
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const next =
+        root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      updateThemeIcon();
+    });
+  }
+
+  /* =========================
+     OPEN MODAL
+  ========================== */
+  function openModalFromCard(card) {
+    if (!card || !modal) return;
+
+    lastFocusedCard = card;
+    currentIndex = cards.indexOf(card);
+
+    // Goal theme
+    modal.classList.remove("leadership-theme", "growth-theme", "relevance-theme");
+    if (card.dataset.theme) modal.classList.add(card.dataset.theme);
+
+    // Text
+    const shortTitle = card.querySelector(".goal-title")?.textContent.trim() || "";
+    modalTitle.textContent = card.dataset.longTitle || shortTitle;
+    modalSlogan.textContent = "in exchange";
+    modalDescription.textContent = card.dataset.longDescription || "";
+
+    // Symbol
+    const symbolImg = card.querySelector(".goal-symbol img");
+    if (symbolImg) {
+      modalSymbol.src = symbolImg.src;
+      modalSymbol.alt = symbolImg.alt || shortTitle;
+    }
+
+    // Bullet list
+    modalList.innerHTML = "";
+    try {
+      JSON.parse(card.dataset.longItems || "[]").forEach(text => {
+        const li = document.createElement("li");
+        li.textContent = text;
+        modalList.appendChild(li);
+      });
+    } catch {}
+
+    /* ===== METRICS ===== */
+    modalMetrics.innerHTML = "";
+    try {
+      JSON.parse(card.dataset.metrics || "[]").forEach(m => {
+        const pill = document.createElement("div");
+        pill.className = "metric-pill";
+        pill.innerHTML = `
+          <span>${m.code}</span>
+          <strong>${m.value}</strong>
+          <div class="metric-tooltip">${m.desc}</div>
+        `;
+
+        // Mobile tap behavior
+        pill.addEventListener("click", e => {
+          e.stopPropagation();
+          modalMetrics
+            .querySelectorAll(".metric-pill.is-open")
+            .forEach(p => p !== pill && p.classList.remove("is-open"));
+          pill.classList.toggle("is-open");
+        });
+
+        pill.querySelector(".metric-tooltip")
+          .addEventListener("click", e => e.stopPropagation());
+
+        modalMetrics.appendChild(pill);
+      });
+    } catch {}
+
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    closeButton?.focus();
+    updateNav();
+  }
+
+  /* =========================
+     NAVIGATION
+  ========================== */
+  function updateNav() {
+    const len = cards.length;
+    const prev = cards[(currentIndex - 1 + len) % len];
+    const next = cards[(currentIndex + 1) % len];
+    fillNav(prev, prevTitle, prevThumb);
+    fillNav(next, nextTitle, nextThumb);
+  }
+
+  function fillNav(card, titleEl, imgEl) {
+    if (!card) return;
+    titleEl.textContent =
+      card.querySelector(".goal-title")?.textContent || "";
+    const img = card.querySelector(".goal-symbol img");
+    if (img) imgEl.src = img.src;
+  }
+
+  prevBtn?.addEventListener("click", e => {
+    e.stopPropagation();
+    openModalFromCard(cards[(currentIndex - 1 + cards.length) % cards.length]);
+  });
+
+  nextBtn?.addEventListener("click", e => {
+    e.stopPropagation();
+    openModalFromCard(cards[(currentIndex + 1) % cards.length]);
+  });
+
+  /* =========================
+     CLOSE MODAL
+  ========================== */
+  function closeModal() {
+    modal?.classList.remove("is-open");
+    modal?.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    lastFocusedCard?.focus();
+  }
+
+  closeButton?.addEventListener("click", closeModal);
+
+  modal?.addEventListener("click", () => {
+    modalMetrics
+      .querySelectorAll(".metric-pill.is-open")
+      .forEach(p => p.classList.remove("is-open"));
+  });
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeModal();
+  });
+
+  /* =========================
+     CARD EVENTS
+  ========================== */
+  cards.forEach(card => {
+    card.addEventListener("click", () => openModalFromCard(card));
+    card.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openModalFromCard(card);
+      }
+    });
+  });
+
+})();
+
+/* =========================
+   LOADING SCREEN (MIN 10s)
+========================== */
+(function () {
+  const MIN_LOADING_TIME = 1000; // 10 seconds
+  const startTime = Date.now();
+
+  window.addEventListener("load", () => {
+    const loader = document.getElementById("loading-screen");
+    if (!loader) return;
+
+    const elapsed = Date.now() - startTime;
+    const remaining = Math.max(0, MIN_LOADING_TIME - elapsed);
+
+    setTimeout(() => {
+      loader.classList.add("is-hidden");
+      loader.setAttribute("aria-hidden", "true");
+    }, remaining);
+  });
+})();
+</script>
+
+<script>
+const menuToggle = document.getElementById("menuToggle");
+const menuClose  = document.getElementById("menuClose");
+const mobileMenu = document.getElementById("mobileMenu");
+
+menuToggle?.addEventListener("click", () => {
+  mobileMenu.classList.add("is-open");
+});
+
+menuClose?.addEventListener("click", () => {
+  mobileMenu.classList.remove("is-open");
+});
+
+/* Optional: close menu when clicking a link */
+mobileMenu?.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => {
+    mobileMenu.classList.remove("is-open");
+  });
+});
+</script>
+
+
+<footer class="site-footer">
+<p class="footer-text">
+  <span class="footer-line desktop-only">
+    Copyrights reserved for AIESEC in Tunisia —
+  </span>
+  <span class="footer-line mobile-only">
+    Copyrights reserved for AIESEC in Tunisia
+  </span>
+
+  <span class="footer-line desktop-only">
+    Developed by Tarek Ben El Mekki
+  </span>
+  <span class="footer-line mobile-only">
+    Developed by Tarek Ben El Mekki
+  </span>
+</p>
+
+</footer>
+
+</body>
+<!-- LOADING OVERLAY -->
+<div id="loading-screen" aria-hidden="false">
+  <div class="loading-inner">
+    <img
+      src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTNuajZjNDBndDR6cTI3YjZ2NWRiN2ZoMm4ybDF3NnNhZjIwdTJoMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/Q60YT16mePtbpTtHqG/giphy.gif"
+      alt="Loading AIESEC"
+      class="loading-gif"
+    />
+    <span class="loading-text">Building exchanges…</span>
+  </div>
+</div>
+
+</html>

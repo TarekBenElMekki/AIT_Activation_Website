@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>A2030 – Metrics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ================= BODY ================= */
+body {
+  font-family: "Poppins", system-ui, sans-serif;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #0b3c5d, #050816 60%);
+  color: #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ================= NAVBAR (MATCHES HERO / GOALS) ================= */
+.main-nav {
+  width: 100%;
+  padding: 8px 20px;
+  background: transparent;
+  position: fixed;
+  top: 40px;
+  left: 0;
+  z-index: 50;
+}
+
+.main-nav::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0.18),
+    rgba(255,255,255,0)
+  );
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  height: 34px;
+  filter: grayscale(100%) brightness(0.85);
+  opacity: 0.85;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.nav-right a {
+  margin-left: 22px;
+  font-size: 0.9rem;
+  color: #d1d5db;
+  text-decoration: none;
+}
+
+.nav-right a:hover {
+  color: #ffffff;
+}
+
+/* hamburger */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+/* ================= MOBILE MENU ================= */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(14px);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}
+
+.mobile-menu.is-open {
+  display: flex;
+}
+
+.mobile-menu a {
+  font-size: 1rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.mobile-menu-close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+/* ================= PAGE CONTENT ================= */
+.page-content {
+  width: 100%;
+  max-width: 1200px;
+  padding: 180px 16px 80px;
+}
+
+/* ================= HEADER ================= */
+.page-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.page-header__badge {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.5);
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.page-header__title {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.page-header__subtitle {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: #9ca3af;
+}
+
+/* ================= GRID ================= */
+.statements-grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.statement-column {
+  background: rgba(15, 23, 42, 0.92);
+  border-radius: 22px;
+  padding: 22px 18px;
+  border: 1px solid rgba(148,163,184,0.45);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.65);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+/* accent */
+.goal-card__accent {
+  height: 4px;
+  width: 100%;
+  border-radius: 999px;
+}
+
+.statement-column.leadership .goal-card__accent {
+  background: linear-gradient(90deg, #00b3ff, #006eff);
+}
+.statement-column.growth .goal-card__accent {
+  background: linear-gradient(90deg, #00e676, #00b248);
+}
+.statement-column.relevance .goal-card__accent {
+  background: linear-gradient(90deg, #ffb300, #ff7043);
+}
+
+/* titles */
+.statement-title h2 {
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.statement-title span {
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  color: #9ca3af;
+}
+
+/* metric */
+.metric-item {
+  text-align: center;
+}
+
+.metric-title {
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(148,163,184,0.15);
+  border: 1px solid rgba(148,163,184,0.4);
+  margin-bottom: 6px;
+}
+
+.metric-desc {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+/* ================= FOOTER ================= */
+footer {
+  width: 100%;
+  padding: 18px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #cbd5e1;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .nav-right { display: none; }
+  .menu-toggle { display: block; }
+  .nav-logo { height: 28px; }
+
+  .statements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-nav { top: 20px; }
+  .page-content { padding-top: 200px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header class="main-nav">
+  <div class="nav-inner">
+    <img src="assets/AH.png" class="nav-logo" alt="AIESEC logo">
+    <nav class="nav-right">
+      <a href="index.html">Home</a>
+      <a href="goals.html">Goals</a>
+      <a href="strategies.html">Strategies</a>
+      <a href="metrics.html">Metrics</a>
+      <a href="game.html">Game</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="menuClose">✕</button>
+  <a href="index.html">Home</a>
+  <a href="goals.html">Goals</a>
+  <a href="strategies.html">Strategies</a>
+  <a href="metrics.html">Metrics</a>
+  <a href="game.html">Game</a>
+</div>
+
+<!-- CONTENT -->
+<main class="page-content">
+
+  <header class="page-header">
+    <span class="page-header__badge">A2030 Vision</span>
+    <h1 class="page-header__title">Performance Metrics</h1>
+    <p class="page-header__subtitle">
+      A quantitative view of exchange performance and operational impact.
+    </p>
+  </header>
+
+  <section class="statements-grid">
+
+    <!-- COLUMN 1 -->
+    <div class="statement-column leadership">
+      <div class="goal-card__accent"></div>
+      <div class="statement-title">
+        <h2>Delivery</h2>
+        <span>volume</span>
+      </div>
+
+      <div class="metric-item"><div class="metric-title"># CO</div><p class="metric-desc">Contracts opened.</p></div>
+      <div class="metric-item"><div class="metric-title"># CO</div><p class="metric-desc">Contracts ongoing.</p></div>
+      <div class="metric-item"><div class="metric-title"># New Expansions</div><p class="metric-desc">New markets launched.</p></div>
+    </div>
+
+    <!-- COLUMN 2 -->
+    <div class="statement-column growth">
+      <div class="goal-card__accent"></div>
+      <div class="statement-title">
+        <h2>Pipeline</h2>
+        <span>movement</span>
+      </div>
+
+      <div class="metric-item"><div class="metric-title"># IXPs</div><p class="metric-desc">Inbound exchanges.</p></div>
+      <div class="metric-item"><div class="metric-title"># of Advances</div><p class="metric-desc">Advanced stages reached.</p></div>
+      <div class="metric-item"><div class="metric-title"># of Government Partnerships</div><p class="metric-desc">Public sector partners.</p></div>
+    </div>
+
+    <!-- COLUMN 3 -->
+    <div class="statement-column relevance">
+      <div class="goal-card__accent"></div>
+      <div class="statement-title">
+        <h2>Quality</h2>
+        <span>outcomes</span>
+      </div>
+
+      <div class="metric-item"><div class="metric-title"># REs</div><p class="metric-desc">Realized exchanges.</p></div>
+      <div class="metric-item"><div class="metric-title"># of IXP</div><p class="metric-desc">Participants inbound.</p></div>
+      <div class="metric-item"><div class="metric-title"># Partners</div><p class="metric-desc">Active partners.</p></div>
+
+      <div class="metric-item"><div class="metric-title"># APDs</div><p class="metric-desc">Approved applications.</p></div>
+      <div class="metric-item"><div class="metric-title"># of RXPs</div><p class="metric-desc">Return exchanges.</p></div>
+      <div class="metric-item"><div class="metric-title"># SUs</div><p class="metric-desc">Sign-ups.</p></div>
+
+      <div class="metric-item"><div class="metric-title">% Fin2Co</div><p class="metric-desc">Finalized to completed.</p></div>
+      <div class="metric-item"><div class="metric-title">% Fin2Co</div><p class="metric-desc">Financial completion rate.</p></div>
+      <div class="metric-item"><div class="metric-title">NPS</div><p class="metric-desc">Net promoter score.</p></div>
+    </div>
+
+  </section>
+</main>
+
+<footer>
+  Copyrights reserved for AIESEC in Tunisia — Developed by Tarek Ben El Mekki
+</footer>
+
+<script>
+const menuToggle = document.getElementById("menuToggle");
+const menuClose = document.getElementById("menuClose");
+const mobileMenu = document.getElementById("mobileMenu");
+
+menuToggle.onclick = () => mobileMenu.classList.add("is-open");
+menuClose.onclick = () => mobileMenu.classList.remove("is-open");
+</script>
+
+</body>
+</html>

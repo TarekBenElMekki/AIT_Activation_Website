@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>A2030 – Goal Spinner Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #0b3c5d, #050816 55%);
+      color: #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ================= NAVBAR ================= */
+    .main-nav {
+      width: 100%;
+      padding: 14px 24px;
+      position: fixed;
+      top: 22px;
+      left: 0;
+      z-index: 30;
+      display: flex;
+      justify-content: center;
+      background: transparent;
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+    }
+
+    .nav-logo {
+      height: 34px;
+      filter: grayscale(100%) brightness(0.9);
+    }
+
+    .nav-right {
+      display: flex;
+      justify-content: center;
+      gap: 22px;
+    }
+
+    .nav-right a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.9;
+      transition: opacity 0.2s ease;
+    }
+
+    .nav-right a:hover {
+      opacity: 1;
+    }
+
+    /* ================= PAGE CONTENT ================= */
+    .page-content {
+      flex: 1;
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 140px 16px 80px;
+    }
+
+    /* ================= GAME CARD ================= */
+    .mini-game-card {
+      width: 100%;
+      max-width: 580px;
+      background: radial-gradient(circle at top,
+        rgba(15, 23, 42, 0.97),
+        rgba(3, 7, 18, 0.98));
+      border-radius: 24px;
+      padding: 24px 20px 26px;
+      box-shadow: 0 24px 55px rgba(0, 0, 0, 0.7);
+      text-align: center;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mini-game-title {
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+    }
+
+    .mini-game-subtitle {
+      font-size: 0.9rem;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+
+    /* ================= SCOREBOARD ================= */
+    .scoreboard {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      font-size: 0.8rem;
+    }
+
+    .score-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      gap: 4px;
+      color: #e5e7eb;
+    }
+
+    .score-label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    .score-value {
+      font-weight: 600;
+    }
+
+    /* ================= SLOT MACHINE ================= */
+    .slot-machine {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .slot-reel {
+      width: 70px;
+      height: 70px;
+      border-radius: 18px;
+      background: radial-gradient(circle at 20% 0,
+        rgba(255, 255, 255, 0.3),
+        rgba(15, 23, 42, 1));
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slot-strip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 2rem;
+      transition: transform 0.3s ease-out;
+    }
+
+    .slot-strip > div {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .slot-reel.spinning .slot-strip {
+      animation: spinReel 0.55s linear infinite;
+    }
+
+    @keyframes spinReel {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-100%); }
+    }
+
+    /* ================= BUTTON ================= */
+    .slot-spin-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 24px;
+      font-weight: 600;
+      background: linear-gradient(120deg, #ff9800, #ff7043);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(255, 152, 0, 0.5);
+    }
+
+    .slot-spin-btn:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .slot-message {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      min-height: 1.2em;
+      color: #9ca3af;
+    }
+
+    .slot-message.success { color: #4ade80; }
+    .slot-message.fail { color: #f97373; }
+
+    /* ================= CONFETTI ================= */
+    .confetti-piece {
+      position: absolute;
+      width: 8px;
+      height: 14px;
+      opacity: 0.9;
+      animation: confettiFall 1.2s linear forwards;
+    }
+
+    @keyframes confettiFall {
+      from { transform: translateY(-20px); }
+      to { transform: translateY(120px); opacity: 0; }
+    }
+
+    /* ================= FOOTER ================= */
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 18px 8px;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+    }
+
+    /* ================= MOBILE ================= */
+    @media (max-width: 600px) {
+      .nav-right { display: none; }
+      .nav-logo { height: 28px; }
+      .page-content { padding-top: 120px; }
+    }
+
+    /* ================= HIDDEN THEME TOGGLE ================= */
+    #themeToggle {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="main-nav">
+  <div class="nav-inner">
+    <img src="assets/AH.png" alt="AIESEC logo" class="nav-logo">
+    <nav class="nav-right">
+      <a href="index.html">Home</a>
+      <a href="goals.html">Goals</a>
+      <a href="strategies.html">Strategies</a>
+      <a href="metrics.html">Metrics</a>
+      <a href="game.html">Game</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hidden toggle to keep JS stable -->
+<button id="themeToggle">🌙</button>
+
+<main class="page-content">
+  <section class="mini-game-card">
+    <h2 class="mini-game-title">A2030 Goal Spinner</h2>
+    <p class="mini-game-subtitle">
+      Spin the reels and try to align Leadership, Growth, and Relevance.
+    </p>
+
+    <div class="scoreboard">
+      <div class="score-pill"><span class="score-label">Score</span><span id="scoreValue">0</span></div>
+      <div class="score-pill"><span class="score-label">Spins</span><span id="spinsValue">0</span></div>
+      <div class="score-pill"><span class="score-label">Wins</span><span id="winsValue">0</span></div>
+      <div class="score-pill"><span class="score-label">Best</span><span id="streakValue">0</span></div>
+    </div>
+
+    <div class="slot-machine">
+      <div class="slot-reel"><div class="slot-strip"><div>💎</div><div>📈</div><div>🧩</div></div></div>
+      <div class="slot-reel"><div class="slot-strip"><div>💎</div><div>📈</div><div>🧩</div></div></div>
+      <div class="slot-reel"><div class="slot-strip"><div>💎</div><div>📈</div><div>🧩</div></div></div>
+    </div>
+
+    <button class="slot-spin-btn" id="slotSpinBtn">Spin the goals</button>
+    <p class="slot-message" id="slotMessage">Align all three symbols.</p>
+  </section>
+</main>
+
+<footer>
+  Copyrights reserved for AIESEC in Tunisia —
+  Developed by Tarek Ben El Mekki
+</footer>
+
+<audio id="spinSound" src="spin.mp3"></audio>
+<audio id="winSound" src="win.mp3"></audio>
+
+<script>
+(function () {
+
+  const spinBtn = document.getElementById("slotSpinBtn");
+  const reels = Array.from(document.querySelectorAll(".slot-reel"));
+  const slotMessage = document.getElementById("slotMessage");
+
+  const scoreEl = document.getElementById("scoreValue");
+  const spinsEl = document.getElementById("spinsValue");
+  const winsEl = document.getElementById("winsValue");
+  const streakEl = document.getElementById("streakValue");
+
+  const spinSound = document.getElementById("spinSound");
+  const winSound = document.getElementById("winSound");
+
+  const symbols = ["💎", "📈", "🧩"];
+
+  let score = 0, spins = 0, wins = 0, streak = 0, bestStreak = 0;
+
+  function updateScoreboard() {
+    scoreEl.textContent = score;
+    spinsEl.textContent = spins;
+    winsEl.textContent = wins;
+    streakEl.textContent = bestStreak;
+  }
+
+  function playSound(a) {
+    if (!a) return;
+    a.currentTime = 0;
+    a.play().catch(() => {});
+  }
+
+  function launchConfetti() {
+    const c = document.querySelector(".mini-game-card");
+    for (let i = 0; i < 60; i++) {
+      const p = document.createElement("div");
+      p.className = "confetti-piece";
+      p.style.left = Math.random() * 100 + "%";
+      p.style.backgroundColor = ["#facc15","#22c55e","#3b82f6","#ec4899"][i % 4];
+      c.appendChild(p);
+      p.addEventListener("animationend", () => p.remove());
+    }
+  }
+
+  function finalizeSpin(res) {
+    if (res.every(v => v === res[0])) {
+      wins++; score += 100; streak++; bestStreak = Math.max(bestStreak, streak);
+      slotMessage.textContent = "Perfect alignment! 🎉";
+      slotMessage.className = "slot-message success";
+      playSound(winSound);
+      launchConfetti();
+    } else {
+      score = Math.max(0, score - 10);
+      streak = 0;
+      slotMessage.textContent = "Almost! Try again.";
+      slotMessage.className = "slot-message fail";
+    }
+    updateScoreboard();
+    spinBtn.disabled = false;
+  }
+
+  function spinSlots() {
+    spinBtn.disabled = true;
+    spins++;
+    playSound(spinSound);
+    updateScoreboard();
+
+    const res = [];
+    reels.forEach((r, i) => {
+      const s = r.querySelector(".slot-strip");
+      r.classList.add("spinning");
+      setTimeout(() => {
+        r.classList.remove("spinning");
+        const sym = symbols[Math.floor(Math.random() * symbols.length)];
+        res[i] = sym;
+        s.style.transform = `translateY(-${symbols.indexOf(sym) * 70}px)`;
+        if (i === reels.length - 1) setTimeout(() => finalizeSpin(res), 200);
+      }, 600 + i * 300);
+    });
+  }
+
+  spinBtn.addEventListener("click", spinSlots);
+  updateScoreboard();
+
+})();
+</script>
+
+</body>
+</html>

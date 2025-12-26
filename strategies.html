@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>A2030 – Strategies</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<!-- Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ================= BODY ================= */
+body {
+  font-family: "Poppins", system-ui, sans-serif;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #0b3c5d, #050816 60%);
+  color: #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ================= NAVBAR (SAME AS METRICS) ================= */
+.main-nav {
+  width: 100%;
+  padding: 8px 20px;
+  background: transparent;
+  position: fixed;
+  top: 40px;
+  left: 0;
+  z-index: 50;
+}
+
+.main-nav::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0.18),
+    rgba(255,255,255,0)
+  );
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  height: 34px;
+  filter: grayscale(100%) brightness(0.85);
+  opacity: 0.85;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.nav-right a {
+  margin-left: 22px;
+  font-size: 0.9rem;
+  color: #d1d5db;
+  text-decoration: none;
+}
+
+.nav-right a:hover {
+  color: #ffffff;
+}
+
+/* hamburger */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+/* ================= MOBILE MENU ================= */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(14px);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}
+
+.mobile-menu.is-open {
+  display: flex;
+}
+
+.mobile-menu a {
+  font-size: 1rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.mobile-menu-close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+/* ================= PAGE CONTENT ================= */
+.page-content {
+  width: 100%;
+  max-width: 1200px;
+  padding: 180px 16px 80px;
+}
+
+/* ================= HEADER ================= */
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.page-header__badge {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.5);
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.page-header__title {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.page-header__subtitle {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: #9ca3af;
+}
+
+/* ================= STRATEGY GRID ================= */
+.strategy-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* CARD */
+.strategy-card {
+  cursor: pointer;
+  border-radius: 26px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(148,163,184,0.45);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.65);
+  overflow: hidden;
+}
+
+.strategy-accent {
+  height: 4px;
+}
+
+.strategy-card[data-s="1"] .strategy-accent { background: linear-gradient(90deg,#00b3ff,#006eff); }
+.strategy-card[data-s="2"] .strategy-accent { background: linear-gradient(90deg,#00e676,#00b248); }
+.strategy-card[data-s="3"] .strategy-accent { background: linear-gradient(90deg,#ffb300,#ff7043); }
+.strategy-card[data-s="4"] .strategy-accent { background: linear-gradient(90deg,#ab47bc,#7e57c2); }
+.strategy-card[data-s="5"] .strategy-accent { background: linear-gradient(90deg,#26c6da,#0288d1); }
+
+/* BODY */
+.strategy-body {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 20px;
+  padding: 22px;
+}
+
+.strategy-symbol {
+  height: 100px;
+  border-radius: 18px;
+  background: radial-gradient(circle at 20% 0,rgba(255,255,255,0.35),transparent 55%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.strategy-symbol img {
+  width: 140%;
+}
+
+.strategy-code {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  opacity: 0.65;
+}
+
+.strategy-title {
+  margin-top: 6px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.strategy-intent {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #9ca3af;
+}
+
+/* ACCORDION */
+.strategy-details {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(148,163,184,0.45);
+  font-size: 0.85rem;
+
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height .35s ease, opacity .25s ease;
+}
+
+.strategy-card.active .strategy-details {
+  max-height: 600px;
+  opacity: 1;
+}
+
+.strategy-details ul {
+  padding-left: 18px;
+  margin: 8px 0;
+}
+
+.strategy-details li {
+  margin-bottom: 6px;
+}
+
+/* ================= FOOTER ================= */
+footer {
+  width: 100%;
+  padding: 18px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #cbd5e1;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .nav-right { display: none; }
+  .menu-toggle { display: block; }
+  .nav-logo { height: 28px; }
+
+  .strategy-body {
+    grid-template-columns: 1fr;
+  }
+
+  .strategy-symbol {
+    justify-self: center;
+  }
+
+  .main-nav { top: 20px; }
+  .page-content { padding-top: 200px; }
+}
+
+@media (max-width: 768px) {
+
+  .strategy-body {
+    grid-template-columns: 1fr;   /* 🔑 one column */
+    gap: 16px;
+  }
+
+  .strategy-symbol {
+    height: 200px;                 /* 🔑 smaller icon */
+    width: 200px;
+    justify-self: center;         /* center horizontally */
+    margin-top: 8px;
+  }
+
+  .strategy-symbol img {
+    width: 150%;
+  }
+
+  .strategy-card {
+    padding-bottom: 8px;          /* reduce excess height */
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header class="main-nav">
+  <div class="nav-inner">
+    <img src="assets/AH.png" class="nav-logo" alt="AIESEC logo">
+    <nav class="nav-right">
+      <a href="index.html">Home</a>
+      <a href="goals.html">Goals</a>
+      <a href="strategies.html">Strategies</a>
+      <a href="metrics.html">Metrics</a>
+      <a href="game.html">Game</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="menuClose">✕</button>
+  <a href="index.html">Home</a>
+  <a href="goals.html">Goals</a>
+  <a href="strategies.html">Strategies</a>
+  <a href="metrics.html">Metrics</a>
+  <a href="game.html">Game</a>
+</div>
+
+<!-- CONTENT -->
+<main class="page-content">
+
+<header class="page-header">
+  <span class="page-header__badge">A2030 Continuity</span>
+  <h1 class="page-header__title">Five Strategic Engines</h1>
+  <p class="page-header__subtitle">
+    Each strategy acts as a system lever designed to compound impact across exchanges.
+  </p>
+</header>
+
+<section class="strategy-grid">
+
+<!-- S1 -->
+<article class="strategy-card active" data-s="1">
+  <div class="strategy-accent"></div>
+  <div class="strategy-body">
+    <div>
+      <h2 class="strategy-title">Build a Credible, Impact-Driven AIESEC for Tunisia</h2>
+      <p class="strategy-intent">
+        Secure strategic partnerships, strengthen financial governance, and reinforce national visibility.
+      </p>
+      <div class="strategy-details">
+        <ul>
+          <li>BD + FIN → Strategic partnerships & sustainable funding</li>
+          <li>BRAND → National relevance & PR</li>
+          <li>PORTFOLIO → Impactful youth experiences</li>
+          <li>OD → Governance & ecosystem alignment</li>
+        </ul>
+        <strong>Result:</strong> AIESEC becomes a national reference for youth impact.
+      </div>
+    </div>
+    <div class="strategy-symbol"><img src="assets/ST1.png"></div>
+  </div>
+</article>
+
+<!-- S2 -->
+<article class="strategy-card" data-s="2">
+  <div class="strategy-accent"></div>
+  <div class="strategy-body">
+    <div>
+      <h2 class="strategy-title">Digitize & Unify AIESEC in Tunisia</h2>
+      <p class="strategy-intent">
+        Create one digital identity and one centralized data ecosystem.
+      </p>
+      <div class="strategy-details">
+        <ul>
+          <li>TECH → Unified digital identity & ERP</li>
+          <li>BRAND → Automated nurturing</li>
+          <li>FIN → Digital accounting</li>
+          <li>OD → Standardized processes</li>
+        </ul>
+        <strong>Result:</strong> A modern, tech-enabled AIESEC.
+      </div>
+    </div>
+    <div class="strategy-symbol"><img src="assets/ST2.png"></div>
+  </div>
+</article>
+
+<!-- S3 -->
+<article class="strategy-card" data-s="3">
+  <div class="strategy-accent"></div>
+  <div class="strategy-body">
+    <div>
+      <h2 class="strategy-title">Empower People to Drive Growth</h2>
+      <p class="strategy-intent">
+        Invest in leadership development and performance systems.
+      </p>
+      <div class="strategy-details">
+        <ul>
+          <li>PEOPLE → Capacity & experience</li>
+          <li>BD → People enabling partnerships</li>
+          <li>PORTFOLIO → Delivery power</li>
+          <li>FIN → Talent investment</li>
+        </ul>
+        <strong>Result:</strong> Future-ready leaders powering growth.
+      </div>
+    </div>
+    <div class="strategy-symbol"><img src="assets/ST3.png"></div>
+  </div>
+</article>
+
+<!-- S4 -->
+<article class="strategy-card" data-s="4">
+  <div class="strategy-accent"></div>
+  <div class="strategy-body">
+    <div>
+      <h2 class="strategy-title">Strengthen and Scale the Exchange Portfolio</h2>
+      <p class="strategy-intent">
+        Deliver high-quality youth experiences at scale.
+      </p>
+      <div class="strategy-details">
+        <ul>
+          <li>PORTFOLIO → Experience design</li>
+          <li>FIN → Cost optimization</li>
+          <li>OD → Scalable processes</li>
+          <li>TECH → Centralized tracking</li>
+        </ul>
+        <strong>Result:</strong> A bigger, better exchange portfolio.
+      </div>
+    </div>
+    <div class="strategy-symbol"><img src="assets/ST4.png"></div>
+  </div>
+</article>
+
+<!-- S5 -->
+<article class="strategy-card" data-s="5">
+  <div class="strategy-accent"></div>
+  <div class="strategy-body">
+    <div>
+      <h2 class="strategy-title">Create One Aligned, Agile, Future-Ready Network</h2>
+      <p class="strategy-intent">
+        Unify all corners under shared systems and ambition.
+      </p>
+      <div class="strategy-details">
+        <ul>
+          <li>OD → Governance & standards</li>
+          <li>TECH → Real-time systems</li>
+          <li>BRAND → Internal & external alignment</li>
+          <li>PEOPLE → Engagement</li>
+        </ul>
+        <strong>Result:</strong> A united AIESEC in Tunisia.
+      </div>
+    </div>
+    <div class="strategy-symbol"><img src="assets/ST5.png"></div>
+  </div>
+</article>
+
+</section>
+</main>
+
+<footer>
+  Copyrights reserved for AIESEC in Tunisia — Developed by Tarek Ben El Mekki
+</footer>
+
+<script>
+const menuToggle = document.getElementById("menuToggle");
+const menuClose = document.getElementById("menuClose");
+const mobileMenu = document.getElementById("mobileMenu");
+
+menuToggle.onclick = () => mobileMenu.classList.add("is-open");
+menuClose.onclick = () => mobileMenu.classList.remove("is-open");
+
+document.querySelectorAll(".strategy-card").forEach(card => {
+  card.addEventListener("click", () => {
+    card.classList.toggle("active");
+  });
+});
+</script>
+
+</body>
+</html>
